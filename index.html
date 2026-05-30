@@ -5,147 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>포켓몬 30주년 로고 스티커 체크리스트</title>
     <style>
-        /* 깔끔하고 직관적인 폰트 및 배경 스타일 */
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        h1 {
-            text-align: center;
-            color: #111;
-            margin-bottom: 30px;
-        }
-        /* 모바일과 PC 모두에서 예쁘게 정렬되는 바둑판(Grid) 레이아웃 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        /* 개별 포켓몬 카드 디자인 */
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            padding: 15px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .pokemon-img {
-            width: 90px;
-            height: 90px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-        .pokemon-info {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .number {
-            color: #888;
-            font-size: 12px;
-            margin-right: 4px;
-        }
-        /* 수량 조절 버튼 및 숫자 스타일 */
-        .counter-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn {
-            background-color: #eee;
-            border: none;
-            border-radius: 6px;
-            width: 28px;
-            height: 28px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background-color: #ddd;
-        }
-        .count {
-            font-size: 16px;
-            font-weight: bold;
-            min-width: 20px;
-        }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; color: #333; }
+        h1 { text-align: center; color: #111; margin-bottom: 20px; }
+        
+        /* 세대별 상단 탭 버튼 레이아웃 */
+        .tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 1200px; margin: 0 auto 30px auto; }
+        .tab-btn { background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { background-color: #eee; }
+        .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        
+        /* 내 보유 목록 전용 특별 탭 색상 */
+        .tab-btn.my-list-btn { background-color: #10b981; color: white; border-color: #10b981; }
+        .tab-btn.my-list-btn:hover { background-color: #059669; }
+        
+        /* 반응형 카드 그리드 배치 */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        
+        /* 이미지 영역 스타일 */
+        .pokemon-img { width: 110px; height: 110px; object-fit: contain; margin-bottom: 10px; background-color: #f1f5f9; border-radius: 8px; }
+        .pokemon-info { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+        .number { color: #888; font-size: 12px; margin-right: 4px; }
+        
+        /* +, - 수량 조절 인터페이스 */
+        .counter-container { display: flex; align-items: center; gap: 12px; }
+        .btn { background-color: #eee; border: none; border-radius: 6px; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background-color: #ddd; }
+        .count { font-size: 16px; font-weight: bold; min-width: 20px; }
+        
+        /* 보유 목록이 비어있을 때 메시지 창 */
+        .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; font-size: 16px; }
     </style>
 </head>
 <body>
 
     <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
     
-    <div class="grid-container" id="pokemon-grid">
-        </div>
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('all')">전체보기</button>
+        <button class="tab-btn" onclick="switchTab('1')">1세대</button>
+        <button class="tab-btn" onclick="switchTab('2')">2세대</button>
+        <button class="tab-btn" onclick="switchTab('3')">3세대</button>
+        <button class="tab-btn" onclick="switchTab('4')">4세대</button>
+        <button class="tab-btn" onclick="switchTab('5')">5세대</button>
+        <button class="tab-btn" onclick="switchTab('6')">6세대</button>
+        <button class="tab-btn" onclick="switchTab('7')">7세대</button>
+        <button class="tab-btn" onclick="switchTab('8')">8세대</button>
+        <button class="tab-btn" onclick="switchTab('9')">9세대</button>
+        <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 보유 목록 (<span id="total-owned">0</span>)</button>
+    </div>
+
+    <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
-        // [수정 포인트] 구글 시트에 있는 포켓몬 데이터를여기에 차례대로 적어주면 됩니다!
-        // 이미지 주소(img)는 시트에 적힌 실제 이미지 주소를 넣으시면 사진이 나옵니다.
-        const pokemonData = [
-            { id: "001", name: "이상해씨", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000101.png" },
-            { id: "002", name: "이상해풀", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000201.png" },
-            { id: "003", name: "이상해꽃", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000301.png" },
-            { id: "004", name: "파이리", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000401.png" },
-            { id: "005", name: "리자드", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000501.png" },
-            { id: "006", name: "리자몽", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000601.png" },
-            { id: "007", name: "꼬부기", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000701.png" },
-            { id: "008", name: "어니부기", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000801.png" },
-            { id: "009", name: "거북왕", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000901.png" },
-            { id: "025", name: "피카츄", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/002501.png" }
-        ];
+        let currentTab = 'all';
 
-        const gridContainer = document.getElementById('pokemon-grid');
+        // ================================================================
+        // 1. [이름 주머니] 시트에서 수식(=A2 & ": """ & B2 & """,")으로 뽑은 이름 목록을 이 자리에 계속 채워 넣으세요!
+        // ================================================================
+        const pokemonNames = {
+            1: "이상해씨", 2: "이상해풀", 3: "이상해꽃", 4: "파이리", 5: "리자드", 6: "리자몽",
+            686: "오케이징", 687: "칼라마네로", 688: "거북손손", 689: "거북손데스", 690: "수레기", 691: "드래캄"
+            // 수식 결과 텍스트들을 복사해서 이 괄호 안에 계속 쉼표(,)로 이어 붙이시면 작동합니다.
+        };
 
-        // 화면에 카드를 그리고 LocalStorage와 연동하는 핵심 두뇌 코드
-        pokemonData.forEach(pokemon => {
-            // 브라우저 기억장치(LocalStorage)에서 기존에 저장된 수량이 있는지 확인 (없으면 0)
-            const savedCount = localStorage.getItem(`pokemon-${pokemon.id}`) || 0;
+        // ================================================================
+        // 2. [예외 이미지 주머니] 중간에 다른 형태의 이미지 주소가 들어간 애들은 번호와 진짜 주소를 한 줄씩 지정해 줍니다.
+        // ================================================================
+        const pokemonImages = {
+            670: "https://data1.pokemonkorea.co.kr/newdata/pokedex/mid/067002.png" // 플라베베(영원의 꽃) 예시
+            // 안 나오는 사진 주소를 발견할 때마다 여기에 [도감번호: "진짜주소",] 형태로 한 줄씩 추가하시면 됩니다.
+        };
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}">
-                <div class="pokemon-info">
-                    <span class="number">No.${pokemon.id}</span>${pokemon.name}
-                </div>
-                <div class="counter-container">
-                    <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
-                    <span class="count" id="count-${pokemon.id}">${savedCount}</span>
-                    <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
-                </div>
-            `;
-            gridContainer.appendChild(card);
-        });
-
-        // +, - 버튼을 누를 때 실행되는 함수
-        function changeCount(id, change) {
-            const countElement = document.getElementById(`count-${id}`);
-            let currentCount = parseInt(countElement.innerText);
-            
-            currentCount += change;
-            
-            // 수량이 0 미만으로 내려가지 않도록 방어
-            if (currentCount < 0) currentCount = 0;
-            
-            // 화면 업데이트
-            countElement.innerText = currentCount;
-            
-            // ★브라우저 로컬스토리지에 수량 즉시 저장!
-            localStorage.setItem(`pokemon-${id}`, currentCount);
-        }
-    </script>
-</body>
-</html>
+        // 도감 번호를 기반으로 세대를 자동으로 쪼개주는 기준점 함수
+        function getGeneration(id) {
+            if (id >= 1 && id <= 151) return '1';
+            if (id >= 152 && id <= 251) return '2';
+            if (id >= 252 && id <= 386) return '3';
+            if (id >= 387 && id <= 493) return '4';
+            if (id >= 494 && id <= 649) return '5';
+            if (id >= 650 && id <= 721) return '6';
+            if (id >= 722 && id <= 809) return '7';
+            if (id >= 810 && id <= 905) return '8';
+            if
