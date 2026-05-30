@@ -36,26 +36,30 @@
         
         /* 리스트가 비어있을 때 메시지 창 */
         .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; font-size: 16px; }
+
+       /* 검색창 레이아웃 */
+.search-container { display: none; justify-content: center; margin-bottom: 25px; gap: 8px; }
+.search-input { padding: 10px 16px; font-size: 15px; border: 1px solid #ddd; border-radius: 8px; width: 200px; text-align: center; }
+.search-btn { background-color: #3b82f6; color: white; border: none; border-radius: 8px; padding: 0 16px; font-size: 14px; font-weight: bold; cursor: pointer; }
+.search-btn:hover { background-color: #2563eb; }
+        
     </style>
 </head>
 <body>
 
     <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
     
-    <div class="tab-container">
-        <button class="tab-btn active" onclick="switchTab('1')">1세대</button>
-        <button class="tab-btn" onclick="switchTab('2')">2세대</button>
-        <button class="tab-btn" onclick="switchTab('3')">3세대</button>
-        <button class="tab-btn" onclick="switchTab('4')">4세대</button>
-        <button class="tab-btn" onclick="switchTab('5')">5세대</button>
-        <button class="tab-btn" onclick="switchTab('6')">6세대</button>
-        <button class="tab-btn" onclick="switchTab('7')">7세대</button>
-        <button class="tab-btn" onclick="switchTab('8')">8세대</button>
-        <button class="tab-btn" onclick="switchTab('9')">9세대</button>
-        <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
-    </div>
+ <div class="tab-container">
+    <button class="tab-btn active" onclick="switchTab('1', event)">1세대</button>
+    <button class="tab-btn" onclick="switchTab('8', event)">8세대</button>
+    <button class="tab-btn" onclick="switchTab('9', event)">9세대</button>
+    <button class="tab-btn" onclick="switchTab('search', event)">🔍 검색</button> 
+    <button class="tab-btn my-list-btn" onclick="switchTab('my', event)">내 리스트 (<span id="total-owned">0</span>)</button>
+</div>
 
-    <div class="grid-container" id="pokemon-grid"></div>
+<div class="search-container" id="search-box">
+    <input type="number" class="search-input" id="search-id" placeholder="도감 번호 입력 (예: 25)" oninput="searchPokemon()">
+</div>
 
     <script>
         // 첫 시작 탭을 '1'세대로 변경하여 로딩 속도를 대폭 최적화합니다.
@@ -232,11 +236,19 @@
             gridContainer.innerHTML = ''; 
             let visibleCount = 0;
 
-            pokemonList.forEach(pokemon => {
-                const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
+        // 현재 입력된 검색 번호 가져오기
+const searchInputVal = document.getElementById('search-id').value.trim();
 
-                if (currentTab !== 'my' && pokemon.gen !== currentTab) return;
-                if (currentTab === 'my' && savedCount === 0) return;
+pokemonList.forEach(pokemon => {
+    const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
+
+    // ★ 검색 탭일 때와 일반 세대 탭일 때의 필터링 규칙 적용
+    if (currentTab === 'search') {
+        if (pokemon.displayId !== searchInputVal) return; // 입력한 도감번호와 다르면 패스
+    } else {
+        if (currentTab !== 'my' && pokemon.gen !== currentTab) return;
+        if (currentTab === 'my' && savedCount === 0) return;
+    }
 
                 visibleCount++;
 
@@ -294,6 +306,34 @@
 
         updateTotalOwnedCount();
         renderGrid();
+
+        // 탭을 바꿀 때 검색창을 보여주거나 숨겨주는 기능 (switchTab 함수 맨 아래에 넣어주셔도 됩니다)
+function switchTab(tabName, event) {
+    currentTab = tabName;
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
+
+    // 검색 탭일 때만 입력창을 보여줍니다.
+    const searchBox = document.getElementById('search-box');
+    if (tabName === 'search') {
+        searchBox.style.display = 'flex';
+        document.getElementById('search-id').focus(); // 바로 입력 가능하게 커서 깜빡임
+    } else {
+        searchBox.style.display = 'none';
+        document.getElementById('search-id').value = ''; // 다른 탭 가면 검색어 초기화
+    }
+
+    renderGrid(); 
+}
+
+// 번호를 입력할 때마다 화면을 실시간으로 새로고침해주는 함수
+function searchPokemon() {
+    renderGrid();
+}
     </script>
 </body>
 </html>
