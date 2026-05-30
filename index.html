@@ -214,15 +214,17 @@
         }
 
 const pokemonList = [];
-pokemonNames.forEach(item => {
-    const mainId = parseInt(String(item.id).split('_')[0]);
+Object.keys(pokemonNames).forEach(key => {
+    // 키에서 앞쪽 숫자만 추출 (예: "670_1" -> 670)
+    const mainId = parseInt(String(key).split('_')[0]);
     
     if (mainId <= 1025) {
         pokemonList.push({
-            id: item.id, // "670_1"
-            displayId: mainId, // 670
-            name: item.name,
-            img: pokemonImages[item.id] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${String(mainId).padStart(4, '0')}.png`,
+            id: key, // "670_1"을 그대로 저장소 키로 사용
+            displayId: mainId, // No. 표시용
+            name: pokemonNames[key],
+            // 이미지가 있으면 사용, 없으면 기본 주소 조합
+            img: pokemonImages[key] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${String(mainId).padStart(4, '0')}.png`,
             gen: getGeneration(mainId)
         });
     }
@@ -247,9 +249,9 @@ pokemonNames.forEach(item => {
                     <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
                     <div class="pokemon-info"><span class="number">No.${pokemon.id}</span>${pokemon.name}</div>
                     <div class="counter-container">
-                        <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
+                        <button class="btn" onclick="changeCount(${pokemon.id}, -1)">-</button>
                         <span class="count" id="count-${pokemon.id}">${savedCount}</span>
-                        <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
+                        <button class="btn" onclick="changeCount(${pokemon.id}, 1)">+</button>
                     </div>
                 `;
                 gridContainer.appendChild(card);
