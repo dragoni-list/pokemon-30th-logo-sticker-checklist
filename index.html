@@ -213,20 +213,18 @@
             return 'ETC';
         }
 
-        const pokemonList = [];
+const pokemonList = [];
 Object.keys(pokemonNames).forEach(key => {
-    const mainId = parseInt(String(key).split('_')[0]); // "670_1" 에서 670만 추출
+    // 키에서 앞쪽 숫자만 추출 (예: "670_1" -> 670)
+    const mainId = parseInt(String(key).split('_')[0]);
     
-    if (mainId <= 1025) { // 1025번까지만 생성
-        const padId = String(mainId).padStart(4, '0');
-        // 별도 예외 주소가 없으면 기본 공식 이미지 사용
-        const finalImg = pokemonImages[key] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${padId}.png`;
-
+    if (mainId <= 1025) {
         pokemonList.push({
-            id: key, // "670_1" 그대로 저장소 키로 사용
-            displayId: mainId, // No.670 으로 화면 표시
+            id: key, // "670_1"을 그대로 저장소 키로 사용
+            displayId: mainId, // No. 표시용
             name: pokemonNames[key],
-            img: finalImg,
+            // 이미지가 있으면 사용, 없으면 기본 주소 조합
+            img: pokemonImages[key] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${String(mainId).padStart(4, '0')}.png`,
             gen: getGeneration(mainId)
         });
     }
