@@ -147,7 +147,7 @@
             // 6세대 (650 ~ 721)
             650: "도치마론", 651: "도치보구", 652: "브리가론", 653: "푸호꼬", 654: "테르나", 655: "마포시", 656: "개개무소", 657: "개굴반장", 658: "개굴닌자", 659: "파르빗",
             660: "파르토", 661: "화살꼬빈", 662: "불화살빈", 663: "파이어로", 664: "분이벌레", 665: "분떠도", 666: "비비용", 667: "레오꼬", 668: "화염레오", 669: "플라베베",
-            670: "플라베베", 671: "플라제스", 672: "메이클", 673: "고고트", 674: "판짱", 675: "부방장", 676: "트리미앙", 677: "냐스퍼", 678: "냐오닉스", 679: "단칼빙",
+            670: "플라엣테", "670_1": "플라엣테(영원의꽃)", 671: "플라제스", 672: "메이클", 673: "고고트", 674: "판짱", 675: "부방장", 676: "트리미앙", 677: "냐스퍼", 678: "냐오닉스", 679: "단칼빙",
             680: "쌍검길", 681: "킬가르도", 682: "슈쁘", 683: "프레프티르", 684: "나룸 puff", 685: "나루림", 686: "오케이징", 687: "칼라마네로", 688: "거북손손", 689: "거북손데스",
             690: "수레기", 691: "드래캄", 692: "완철포", 693: "블로스터", 694: "목도리키텔", 695: "일레도르드", 696: "티고라스", 697: "견고라스", 698: "아마루스", 699: "아마루르가",
             700: "님피아", 701: "루차불", 702: "데덴네", 703: "멜리시", 704: "미끄메라", 705: "미끄네일", 706: "미끄래곤", 707: "클레피", 708: "나목령", 709: "대로트", 710: "호박인",
@@ -214,18 +214,23 @@
         }
 
         const pokemonList = [];
-        for (let i = 1; i <= 1165; i++) {
-            const padId = String(i).padStart(4, '0'); 
-            const finalImg = pokemonImages[i] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${padId}.png`;
-            
-            pokemonList.push({
-                id: i,
-                // ★수정 포인트: 이름 주머니에 없더라도 빈 화면이 되지 않고 '포켓몬 #번호'로 강제 출력되게 변경!
-                name: pokemonNames[i] || `포켓몬 #${i}`, 
-                img: finalImg,
-                gen: getGeneration(i)
-            });
-        }
+Object.keys(pokemonNames).forEach(key => {
+    const mainId = parseInt(String(key).split('_')[0]); // "670_1" 에서 670만 추출
+    
+    if (mainId <= 1025) { // 1025번까지만 생성
+        const padId = String(mainId).padStart(4, '0');
+        // 별도 예외 주소가 없으면 기본 공식 이미지 사용
+        const finalImg = pokemonImages[key] || `https://www.pokemon.co.jp/ex/30th_logo/assets/img/download/${padId}.png`;
+
+        pokemonList.push({
+            id: key, // "670_1" 그대로 저장소 키로 사용
+            displayId: mainId, // No.670 으로 화면 표시
+            name: pokemonNames[key],
+            img: finalImg,
+            gen: getGeneration(mainId)
+        });
+    }
+});
 
         function renderGrid() {
             const gridContainer = document.getElementById('pokemon-grid');
