@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포켓몬 30주년 로고 스티커 체크리스트</title>
+    <style>
+        /* 깔끔하고 직관적인 폰트 및 배경 스타일 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #111;
+            margin-bottom: 30px;
+        }
+        /* 모바일과 PC 모두에서 예쁘게 정렬되는 바둑판(Grid) 레이아웃 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* 개별 포켓몬 카드 디자인 */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .pokemon-img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        .pokemon-info {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .number {
+            color: #888;
+            font-size: 12px;
+            margin-right: 4px;
+        }
+        /* 수량 조절 버튼 및 숫자 스타일 */
+        .counter-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn {
+            background-color: #eee;
+            border: none;
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background-color: #ddd;
+        }
+        .count {
+            font-size: 16px;
+            font-weight: bold;
+            min-width: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
+    
+    <div class="grid-container" id="pokemon-grid">
+        </div>
+
+    <script>
+        // [수정 포인트] 구글 시트에 있는 포켓몬 데이터를여기에 차례대로 적어주면 됩니다!
+        // 이미지 주소(img)는 시트에 적힌 실제 이미지 주소를 넣으시면 사진이 나옵니다.
+        const pokemonData = [
+            { id: "001", name: "이상해씨", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000101.png" },
+            { id: "002", name: "이상해풀", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000201.png" },
+            { id: "003", name: "이상해꽃", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000301.png" },
+            { id: "004", name: "파이리", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000401.png" },
+            { id: "005", name: "리자드", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000501.png" },
+            { id: "006", name: "리자몽", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000601.png" },
+            { id: "007", name: "꼬부기", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000701.png" },
+            { id: "008", name: "어니부기", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000801.png" },
+            { id: "009", name: "거북왕", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/000901.png" },
+            { id: "025", name: "피카츄", img: "https://data1.pokemonkorea.co.kr/genesect/pokemon/pic/002501.png" }
+        ];
+
+        const gridContainer = document.getElementById('pokemon-grid');
+
+        // 화면에 카드를 그리고 LocalStorage와 연동하는 핵심 두뇌 코드
+        pokemonData.forEach(pokemon => {
+            // 브라우저 기억장치(LocalStorage)에서 기존에 저장된 수량이 있는지 확인 (없으면 0)
+            const savedCount = localStorage.getItem(`pokemon-${pokemon.id}`) || 0;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}">
+                <div class="pokemon-info">
+                    <span class="number">No.${pokemon.id}</span>${pokemon.name}
+                </div>
+                <div class="counter-container">
+                    <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
+                    <span class="count" id="count-${pokemon.id}">${savedCount}</span>
+                    <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
+                </div>
+            `;
+            gridContainer.appendChild(card);
+        });
+
+        // +, - 버튼을 누를 때 실행되는 함수
+        function changeCount(id, change) {
+            const countElement = document.getElementById(`count-${id}`);
+            let currentCount = parseInt(countElement.innerText);
+            
+            currentCount += change;
+            
+            // 수량이 0 미만으로 내려가지 않도록 방어
+            if (currentCount < 0) currentCount = 0;
+            
+            // 화면 업데이트
+            countElement.innerText = currentCount;
+            
+            // ★브라우저 로컬스토리지에 수량 즉시 저장!
+            localStorage.setItem(`pokemon-${id}`, currentCount);
+        }
+    </script>
+</body>
+</html>
