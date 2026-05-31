@@ -255,7 +255,7 @@ const pokemonList = [];
     document.getElementById('search-box').style.display = (currentTab === 'search') ? 'flex' : 'none';
 
     pokemonList.forEach(pokemon => {
-        const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
+       const savedCount = parseInt(localStorage.getItem(getStorageKey(pokemon.id))) || 0;
 
         // 1. 검색 탭 로직: 검색창에 입력된 번호와 displayId가 일치하는지 확인
         if (currentTab === 'search') {
@@ -289,6 +289,7 @@ const pokemonList = [];
 }
 
         function changeCount(id, change) {
+            const key = getStorageKey(id); //
             const countElement = document.getElementById(`count-${id}`);
             let currentCount = parseInt(countElement.innerText);
             currentCount += change;
@@ -296,21 +297,26 @@ const pokemonList = [];
             if (currentCount < 0) currentCount = 0; 
             countElement.innerText = currentCount;
             
-            localStorage.setItem(`poke30th-${id}`, currentCount);
+            localStorage.setItem(key, currentCount); //
             updateTotalOwnedCount();
             
             if (currentTab === 'my' && currentCount === 0) renderGrid();
         }
 
-        function switchTab(tabName) {
-            currentTab = tabName;
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // 이벤트 타겟팅 안정성 강화
-            event.target.classList.add('active');
-            renderGrid(); 
+     function switchTab(tabName) {
+    currentTab = tabName;
+    
+    // 버튼 스타일 업데이트
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.innerText.includes(tabName === 'my' ? '내 리스트' : 
+            (tabName === 'search' ? '검색' : tabName + '세대'))) {
+            btn.classList.add('active');
         }
+    });
+    
+    renderGrid(); 
+}
 
         function updateTotalOwnedCount() {
             let total = 0;
@@ -325,5 +331,24 @@ const pokemonList = [];
         updateTotalOwnedCount();
         renderGrid();
     </script>
+    // [스크립트 최상단]
+const urlParams = new URLSearchParams(window.location.search);
+let currentUser = urlParams.get('user');
+
+if (!currentUser) {
+    currentUser = crypto.randomUUID();
+    window.location.search = `?user=${currentUser}`;
+}
+
+// 주소 복사창에 현재 주소 넣기
+window.onload = () => {
+    document.getElementById('share-url').value = window.location.href;
+    updateTotalOwnedCount();
+    renderGrid();
+};
+
+function getStorageKey(id) {
+    return `poke30th-${currentUser}-${id}`;
+}
 </body>
 </html>
