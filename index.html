@@ -75,9 +75,9 @@
 function saveAsImage() {
     const grid = document.getElementById('pokemon-grid');
     
-    // 1. 캡처를 위해 그리드 스타일을 10칸으로 일시 변경
+    // 1. 캡처를 위해 그리드 스타일을 6칸으로 일시 변경
     const originalStyle = grid.style.gridTemplateColumns;
-    grid.style.gridTemplateColumns = "repeat(10, 1fr)";
+    grid.style.gridTemplateColumns = "repeat(6, 1fr)";
     
     // 2. 캡처 실행 (useCORS: true는 이미지 포함을 위해 필수)
     html2canvas(grid, {
@@ -87,7 +87,7 @@ function saveAsImage() {
     }).then(canvas => {
         // 3. 이미지 다운로드
         const link = document.createElement('a');
-        link.download = '내_포켓몬_리스트_10칸.png';
+        link.download = '내_포켓몬_리스트.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
         
