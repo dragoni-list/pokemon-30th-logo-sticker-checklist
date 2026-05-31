@@ -76,17 +76,24 @@
 function saveAsImage() {
     const grid = document.getElementById('pokemon-grid');
     
-    // 이미지를 캡처할 때 외부 이미지 허용(useCORS)
+    // 1. 캡처를 위해 그리드 스타일을 10칸으로 일시 변경
+    const originalStyle = grid.style.gridTemplateColumns;
+    grid.style.gridTemplateColumns = "repeat(10, 1fr)";
+    
+    // 2. 캡처 실행 (useCORS: true는 이미지 포함을 위해 필수)
     html2canvas(grid, {
         backgroundColor: '#f8f9fa',
         scale: 2,
-        useCORS: true, // 외부 이미지 차단 방지(중요!)
-        allowTaint: false 
+        useCORS: true 
     }).then(canvas => {
+        // 3. 이미지 다운로드
         const link = document.createElement('a');
-        link.download = '내_포켓몬_리스트.png';
+        link.download = '내_포켓몬_리스트_10칸.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+        
+        // 4. 다시 원래 스타일로 복구
+        grid.style.gridTemplateColumns = originalStyle;
     });
 }
 
