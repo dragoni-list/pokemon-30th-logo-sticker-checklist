@@ -290,46 +290,47 @@ const pokemonList = [];
            if (visibleCount === 0) gridContainer.innerHTML = `<div class="empty-message">해당되는 포켓몬이 없습니다.</div>`;
         }
 
-function changeCount(id, change) {
-            const key = `poke30th-${id}`; // 키 형식을 통일합니다.
-            const countElement = document.getElementById(`count-${id}`);
-            if (!countElement) return;
-            
-            let currentCount = parseInt(countElement.innerText) + change;
-            if (currentCount < 0) currentCount = 0; 
-            
-            countElement.innerText = currentCount;
-            localStorage.setItem(key, currentCount);
-            
-            // 여기서 카운트를 다시 계산하고 화면에 반영합니다.
-            updateTotalOwnedCount();
-            
-            if (currentTab === 'my') renderGrid();
-        }
+// 1. 저장할 때도, 불러올 때도 이 키를 사용하세요.
+function getStorageKey(id) {
+    return `poke30th-${id}`;
+}
 
-        function updateTotalOwnedCount() {
-            let total = 0;
-            // 모든 포켓몬 리스트를 순회하며 1개 이상 가지고 있는지 확인
-            pokemonList.forEach(p => {
-                const count = parseInt(localStorage.getItem(`poke30th-${p.id}`)) || 0;
-                if (count > 0) total++;
-            });
-            // 내 리스트 버튼 안의 숫자를 업데이트
-            document.getElementById('total-owned').innerText = total;
-        }
-     function switchTab(tabName) {
-    currentTab = tabName;
+function changeCount(id, change) {
+    const key = getStorageKey(id);
+    const countElement = document.getElementById(`count-${id}`);
+    if (!countElement) return;
     
-    // 버튼 스타일 업데이트
+    let currentCount = parseInt(countElement.innerText) + change;
+    if (currentCount < 0) currentCount = 0; 
+    
+    countElement.innerText = currentCount;
+    localStorage.setItem(key, currentCount);
+    
+    updateTotalOwnedCount(); // 전체 카운트 갱신
+    if (currentTab === 'my') renderGrid(); // '내 리스트' 탭일 경우 실시간 갱신
+}
+
+function updateTotalOwnedCount() {
+    let total = 0;
+    pokemonList.forEach(p => {
+        // 일관된 getStorageKey 사용
+        const count = parseInt(localStorage.getItem(getStorageKey(p.id))) || 0;
+        if (count > 0) total++;
+    });
+    document.getElementById('total-owned').innerText = total;
+}
+
+// 탭 전환 시 active 클래스 처리 수정
+function switchTab(tabName) {
+    currentTab = tabName;
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.innerText.includes(tabName === 'my' ? '내 리스트' : 
-            (tabName === 'search' ? '검색' : tabName + '세대'))) {
+        // '내 리스트' 버튼은 별도 클래스를 유지하므로 조건문 수정
+        if (btn.onclick.toString().includes(`switchTab('${tabName}')`)) {
             btn.classList.add('active');
         }
     });
-    
-    renderGrid(); 
+    renderGrid();
 }
 
         function updateTotalOwnedCount() {
