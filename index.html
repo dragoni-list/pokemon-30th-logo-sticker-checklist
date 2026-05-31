@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    // 1. URL 파라미터 가져오기
+const urlParams = new URLSearchParams(window.location.search);
+let currentUser = urlParams.get('user');
+
+// 2. 만약 user가 없다면(처음 접속 시), 고유 ID를 생성하고 URL을 새로고침
+if (!currentUser) {
+    currentUser = crypto.randomUUID(); // 랜덤한 긴 고유 문자열 생성
+    window.location.search = `?user=${currentUser}`;
+}
+
+// 3. 페이지 로드 시 현재 URL을 입력창에 표시
+window.onload = () => {
+    document.getElementById('share-url').value = window.location.href;
+    updateTotalOwnedCount();
+    renderGrid();
+};
+
+// 4. 복사 기능
+function copyUrl() {
+    const copyText = document.getElementById("share-url");
+    copyText.select();
+    document.execCommand("copy");
+    alert("도감 주소가 복사되었습니다! 친구에게 공유하세요.");
+}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>포켓몬 30주년 로고 스티커 체크리스트</title>
@@ -41,6 +65,11 @@
 <body>
 
     <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
+    <div style="text-align: center; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+    <p>내 도감 주소:</p>
+    <input type="text" id="share-url" readonly style="width: 70%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+    <button onclick="copyUrl()" style="padding: 8px 12px; cursor: pointer;">복사</button>
+</div>
     
     <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('1')">1세대</button>
@@ -309,10 +338,11 @@ const pokemonList = [];
 
         function updateTotalOwnedCount() {
             let total = 0;
-            for (let i = 1; i <= 1165; i++) {
-                const count = parseInt(localStorage.getItem(`poke30th-${i}`)) || 0;
+            // 현재 유저의 고유 저장소 키(getStorageKey 사용)를 기준으로 카운트합니다.
+            pokemonList.forEach(p => {
+                const count = parseInt(localStorage.getItem(getStorageKey(p.id))) || 0;
                 if (count > 0) total++;
-            }
+            });
             document.getElementById('total-owned').innerText = total;
         }
 
