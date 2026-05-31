@@ -29,6 +29,13 @@
 }
 
 /* 모바일 화면(폭 600px 이하)에서는 칸 크기 자동 조절 */
+        /* iOS 브라우저 확대 방지 핵심 코드 */
+@media screen and (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important; /* 16px 이상이어야 확대되지 않음 */
+        transform: none !important;
+    }
+}
 @media (max-width: 600px) {
     .pokemon-img { width: 40px; height: 40px; }
     .pokemon-info { font-size: 10px; }
