@@ -38,6 +38,7 @@
         /* 리스트가 비어있을 때 메시지 창 */
         .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; font-size: 16px; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -48,6 +49,7 @@
     <input type="text" id="share-url" readonly style="width: 60%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
     <button onclick="copyUrl()" style="padding: 10px 15px; cursor: pointer; background: #3b82f6; color: white; border: none; border-radius: 5px;">복사</button>
 </div>
+    <button onclick="saveAsImage()" style="padding: 10px 15px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer;">이미지로 저장하기</button>
 
 <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('1')">1세대</button>
@@ -70,6 +72,21 @@
     <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
+        function saveAsImage() {
+    const grid = document.getElementById('pokemon-grid');
+    
+    // 이미지 캡처 실행
+    html2canvas(grid, {
+        backgroundColor: '#f8f9fa', // 배경색 지정
+        scale: 2 // 화질을 2배로 선명하게
+    }).then(canvas => {
+        // 이미지를 다운로드 링크로 변환
+        const link = document.createElement('a');
+        link.download = 'my-pokemon-checklist.png'; // 파일 이름
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
         // 복사 기능 함수 추가
 function copyUrl() {
     const copyText = document.getElementById("share-url");
