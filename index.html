@@ -11,7 +11,13 @@
         /* 세대별 상단 탭 버튼 레이아웃 */
         /* 세대별 상단 탭 버튼 레이아웃 */
 .tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1200px; margin: 0 auto 30px auto; padding: 0 10px; }
-.tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+<div style="text-align: center; margin-bottom: 20px;">
+    <button onclick="exportData()" class="tab-btn">내 리스트 저장(파일)</button>
+    <input type="file" id="file-input" style="display:none" onchange="importData(event)">
+    <button onclick="document.getElementById('file-input').click()" class="tab-btn">리스트 불러오기</button>
+</div>
+       
+        .tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .tab-btn:hover { background-color: #eee; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         
@@ -70,6 +76,36 @@
     <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
+        // 데이터를 파일로 저장
+function exportData() {
+    const saveData = {};
+    pokemonList.forEach(p => {
+        const val = localStorage.getItem(getStorageKey(p.id));
+        if (val && parseInt(val) > 0) saveData[p.id] = val;
+    });
+    
+    const blob = new Blob([JSON.stringify(saveData)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'my-pokemon-list.json';
+    a.click();
+}
+
+// 파일에서 데이터 불러오기
+function importData(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const importedData = JSON.parse(e.target.result);
+        Object.keys(importedData).forEach(id => {
+            localStorage.setItem(getStorageKey(id), importedData[id]);
+        });
+        alert("리스트를 불러왔습니다!");
+        renderGrid();
+        updateTotalOwnedCount();
+    };
+    reader.readAsText(file);
+}
         // 복사 기능 함수 추가
 function copyUrl() {
     const copyText = document.getElementById("share-url");
