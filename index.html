@@ -8,50 +8,34 @@
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; color: #333; }
         h1 { text-align: center; color: #111; margin-bottom: 20px; }
         
-        /* 세대별 상단 탭 버튼 레이아웃 */
-        /* 세대별 상단 탭 버튼 레이아웃 */
-.tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1200px; margin: 0 auto 30px auto; padding: 0 10px; }
-.tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1200px; margin: 0 auto 30px auto; padding: 0 10px; }
+        .tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .tab-btn:hover { background-color: #eee; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         
-        /* 내 리스트 전용 특별 탭 색상 */
         .tab-btn.my-list-btn { background-color: #10b981; color: white; border-color: #10b981; }
         .tab-btn.my-list-btn:hover { background-color: #059669; }
         
-        /* 반응형 카드 그리드 배치 */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 15px; text-align: center; display: flex; flex-direction: column; align-items: center; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-5px); }
+        /* 가로 6칸 고정 스타일 */
+        .grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         
-        /* 이미지 영역 스타일 */
-        .pokemon-img { width: 110px; height: 110px; object-fit: contain; margin-bottom: 10px; background-color: #f1f5f9; border-radius: 8px; }
-        .pokemon-info { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
-        .number { color: #888; font-size: 12px; margin-right: 4px; }
+        .pokemon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; background-color: #f1f5f9; border-radius: 8px; }
+        .pokemon-info { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        .number { color: #888; font-size: 10px; margin-right: 4px; }
         
-        /* +, - 수량 조절 인터페이스 */
-        .counter-container { display: flex; align-items: center; gap: 12px; }
-        .btn { background-color: #eee; border: none; border-radius: 6px; width: 30px; height: 30px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        .btn:hover { background-color: #ddd; }
-        .count { font-size: 16px; font-weight: bold; min-width: 20px; }
+        .counter-container { display: flex; align-items: center; gap: 8px; }
+        .btn { background-color: #eee; border: none; border-radius: 4px; width: 25px; height: 25px; font-size: 14px; cursor: pointer; }
+        .count { font-size: 14px; font-weight: bold; min-width: 15px; }
         
-        /* 리스트가 비어있을 때 메시지 창 */
-        .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; font-size: 16px; }
+        .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
     <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
 
-<div class="share-box" style="text-align: center; margin: 20px auto; padding: 15px; border: 1px solid #eee; border-radius: 12px; max-width: 600px; background: #fff;">
-    <p>내 도감 주소:</p>
-    <input type="text" id="share-url" readonly style="width: 60%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-    <button onclick="copyUrl()" style="padding: 10px 15px; cursor: pointer; background: #3b82f6; color: white; border: none; border-radius: 5px;">복사</button>
-</div>
-    <button onclick="saveAsImage()" style="padding: 10px 15px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer;">이미지로 저장하기</button>
-
-<div class="tab-container">
+    <div class="tab-container">
         <button class="tab-btn active" onclick="switchTab('1')">1세대</button>
         <button class="tab-btn" onclick="switchTab('2')">2세대</button>
         <button class="tab-btn" onclick="switchTab('3')">3세대</button>
@@ -63,88 +47,18 @@
         <button class="tab-btn" onclick="switchTab('9')">9세대</button>
         <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
     </div>
-    <button class="tab-btn" onclick="switchTab('search')">🔍 검색(전체)</button>
+    
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <button class="tab-btn" onclick="switchTab('search')">🔍 검색(전체)</button>
+    </div>
 
-<div id="search-box" style="display: none; justify-content: center; margin-bottom: 20px;">
-    <input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center;">
-</div>
+    <div id="search-box" style="display: none; justify-content: center; margin-bottom: 20px;">
+        <input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center;">
+    </div>
 
     <div class="grid-container" id="pokemon-grid"></div>
 
-  <script>
-function saveAsImage() {
-    const grid = document.getElementById('pokemon-grid');
-    
-    // 1. 캡처를 위해 그리드 스타일을 6칸으로 일시 변경
-    const originalStyle = grid.style.gridTemplateColumns;
-    grid.style.gridTemplateColumns = "repeat(6, 1fr)";
-    
-    // 2. 캡처 실행 (useCORS: true는 이미지 포함을 위해 필수)
-    html2canvas(grid, {
-        backgroundColor: '#f8f9fa',
-        scale: 2,
-        useCORS: true 
-    }).then(canvas => {
-        // 3. 이미지 다운로드
-        const link = document.createElement('a');
-        link.download = '내_포켓몬_리스트.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        // 4. 다시 원래 스타일로 복구
-        grid.style.gridTemplateColumns = originalStyle;
-    });
-}
-
-// 내 리스트(체크 상태)를 파일로 저장
-function saveListFile() {
-    const saveData = {};
-    pokemonList.forEach(p => {
-        const val = localStorage.getItem(getStorageKey(p.id));
-        if (val && parseInt(val) > 0) saveData[p.id] = val;
-    });
-    
-    const blob = new Blob([JSON.stringify(saveData)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'my-pokemon-data.json'; // 이 파일만 있으면 언제든 복구 가능!
-    a.click();
-}
-        // 복사 기능 함수 추가
-function copyUrl() {
-    const copyText = document.getElementById("share-url");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // 모바일 대응
-    
-    navigator.clipboard.writeText(copyText.value).then(() => {
-        alert("도감 주소가 복사되었습니다!");
-    }).catch(err => {
-        alert("복사에 실패했습니다.");
-    });
-}
-        // [추가] URL 파라미터에서 유저 ID를 가져옵니다.
-        const urlParams = new URLSearchParams(window.location.search);
-        let currentUser = urlParams.get('user');
-
-        // [추가] 처음 접속 시 유저 ID가 없으면 랜덤 생성 후 주소를 바꿉니다.
-        if (!currentUser) {
-            currentUser = crypto.randomUUID();
-            window.location.search = `?user=${currentUser}`;
-        }
-
-        // [추가] 페이지 로드 시 복사창에 주소 입력
-        window.onload = () => {
-            document.getElementById('share-url').value = window.location.href;
-            updateTotalOwnedCount();
-            renderGrid();
-        };
-
-        // [추가] 저장소 키 생성 함수
-        function getStorageKey(id) {
-            return `poke30th-${currentUser}-${id}`;
-        }
-
-        let currentTab = '1';
+    <script>
 
         // ================================================================
        const pokemonNames = {
@@ -313,64 +227,51 @@ const pokemonList = [];
                 });
             }
         });
-        function renderGrid() {
+   function renderGrid() {
            const gridContainer = document.getElementById('pokemon-grid');
-    gridContainer.innerHTML = ''; 
-    const searchVal = document.getElementById('search-id').value.trim();
-    let visibleCount = 0;
+           gridContainer.innerHTML = ''; 
+           const searchVal = document.getElementById('search-id').value.trim();
+           let visibleCount = 0;
 
-    // 검색창 표시 여부 제어
-    document.getElementById('search-box').style.display = (currentTab === 'search') ? 'flex' : 'none';
+           document.getElementById('search-box').style.display = (currentTab === 'search') ? 'flex' : 'none';
 
-    pokemonList.forEach(pokemon => {
-       const savedCount = parseInt(localStorage.getItem(getStorageKey(pokemon.id))) || 0;
+           pokemonList.forEach(pokemon => {
+               const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
 
-        // 1. 검색 탭 로직: 검색창에 입력된 번호와 displayId가 일치하는지 확인
-        if (currentTab === 'search') {
-            if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
-        } 
-        // 2. 기존 로직: 내 리스트 또는 세대 탭
-        else if (currentTab === 'my') {
-            if (savedCount === 0) return;
+               if (currentTab === 'search') {
+                   if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
+               } else if (currentTab === 'my') {
+                   if (savedCount === 0) return;
+               } else if (pokemon.gen !== currentTab) return;
+
+               visibleCount++;
+               const card = document.createElement('div');
+               card.className = 'card';
+               card.innerHTML = `
+                   <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
+                   <div class="pokemon-info"><span class="number">No.${pokemon.displayId}</span>${pokemon.name}</div>
+                   <div class="counter-container">
+                       <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
+                       <span class="count" id="count-${pokemon.id}">${savedCount}</span>
+                       <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
+                   </div>
+               `;
+               gridContainer.appendChild(card);
+           });
+           if (visibleCount === 0) gridContainer.innerHTML = `<div class="empty-message">해당되는 포켓몬이 없습니다.</div>`;
         }
-        else if (pokemon.gen !== currentTab) return;
-
-        visibleCount++;
-        // ... (이후 카드 생성 코드는 기존과 동일하게 유지)
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
-            <div class="pokemon-info"><span class="number">No.${pokemon.id}</span>${pokemon.name}</div>
-            <div class="counter-container">
-                <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
-                <span class="count" id="count-${pokemon.id}">${savedCount}</span>
-                <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
-            </div>
-        `;
-        gridContainer.appendChild(card);
-    });
-
-    if (visibleCount === 0 && (currentTab === 'my' || currentTab === 'search')) {
-        gridContainer.innerHTML = `<div class="empty-message">해당되는 포켓몬이 없습니다.</div>`;
-    }
-}
 
         function changeCount(id, change) {
-            const key = getStorageKey(id); //
+            const key = `poke30th-${id}`;
             const countElement = document.getElementById(`count-${id}`);
-            let currentCount = parseInt(countElement.innerText);
-            currentCount += change;
-            
+            if (!countElement) return;
+            let currentCount = parseInt(countElement.innerText) + change;
             if (currentCount < 0) currentCount = 0; 
             countElement.innerText = currentCount;
-            
-            localStorage.setItem(key, currentCount); //
+            localStorage.setItem(key, currentCount);
             updateTotalOwnedCount();
-            
-            if (currentTab === 'my' && currentCount === 0) renderGrid();
+            if (currentTab === 'my') renderGrid();
         }
-
      function switchTab(tabName) {
     currentTab = tabName;
     
