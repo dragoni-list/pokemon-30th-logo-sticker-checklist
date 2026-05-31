@@ -69,6 +69,12 @@
         .count { font-size: 14px; font-weight: bold; min-width: 15px; }
         
         .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; }
+        @media screen and (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important; /* 16px 미만이면 자동으로 확대됨 */
+        -webkit-text-size-adjust: none; /* 텍스트 자동 확대 금지 */
+        touch-action: manipulation;
+    }
     </style>
 </head>
 <body>
