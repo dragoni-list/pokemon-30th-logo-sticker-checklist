@@ -61,8 +61,10 @@ function updateTotalOwnedCount() {
         const count = parseInt(localStorage.getItem(`poke30th-${p.id}`)) || 0;
         if (count > 0) total++;
     });
-    document.getElementById('total-owned').innerText = total;
+    const totalEl = document.getElementById('total-owned');
+    if (totalEl) totalEl.innerText = total;
 }
+  
 
         // ================================================================
        const pokemonNames = {
@@ -267,7 +269,25 @@ function renderGrid() {
                 gridContainer.innerHTML = `<div class="empty-message">해당하는 포켓몬이 없습니다.</div>`;
             }
         }
-
+function changeCount(id, delta) {
+    const key = `poke30th-${id}`;
+    let count = parseInt(localStorage.getItem(key)) || 0;
+    count = Math.max(0, count + delta); // 0 밑으로는 안 내려가게 설정
+    
+    localStorage.setItem(key, count);
+    
+    // UI 업데이트
+    const countEl = document.getElementById(`count-${id}`);
+    if (countEl) countEl.innerText = count;
+    
+    // 내 리스트 카운트 갱신
+    updateTotalOwnedCount();
+    
+    // '내 리스트' 탭일 때는 수량이 0이 되면 즉시 화면에서 제거
+    if (currentTab === 'my') {
+        renderGrid();
+    }
+}
         function switchTab(tabName) {
             currentTab = tabName;
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -289,6 +309,7 @@ function renderGrid() {
 
         // 초기 실행
         switchTab('1');
+        updateTotalOwnedCount();
     </script>
 </body>
 </html>
