@@ -72,21 +72,39 @@
     <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
-        function saveAsImage() {
+  <script>
+function saveAsImage() {
     const grid = document.getElementById('pokemon-grid');
     
-    // 이미지 캡처 실행
+    // 이미지를 캡처할 때 외부 이미지 허용(useCORS)
     html2canvas(grid, {
-        backgroundColor: '#f8f9fa', // 배경색 지정
-        scale: 2 // 화질을 2배로 선명하게
+        backgroundColor: '#f8f9fa',
+        scale: 2,
+        useCORS: true, // 외부 이미지 차단 방지(중요!)
+        allowTaint: false 
     }).then(canvas => {
-        // 이미지를 다운로드 링크로 변환
         const link = document.createElement('a');
-        link.download = 'my-pokemon-checklist.png'; // 파일 이름
+        link.download = '내_포켓몬_리스트.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
 }
+
+// 내 리스트(체크 상태)를 파일로 저장
+function saveListFile() {
+    const saveData = {};
+    pokemonList.forEach(p => {
+        const val = localStorage.getItem(getStorageKey(p.id));
+        if (val && parseInt(val) > 0) saveData[p.id] = val;
+    });
+    
+    const blob = new Blob([JSON.stringify(saveData)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'my-pokemon-data.json'; // 이 파일만 있으면 언제든 복구 가능!
+    a.click();
+}
+</script>
         // 복사 기능 함수 추가
 function copyUrl() {
     const copyText = document.getElementById("share-url");
