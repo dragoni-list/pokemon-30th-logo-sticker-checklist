@@ -261,16 +261,32 @@ const pokemonList = [];
            if (visibleCount === 0) gridContainer.innerHTML = `<div class="empty-message">해당되는 포켓몬이 없습니다.</div>`;
         }
 
-        function changeCount(id, change) {
-            const key = `poke30th-${id}`;
+function changeCount(id, change) {
+            const key = `poke30th-${id}`; // 키 형식을 통일합니다.
             const countElement = document.getElementById(`count-${id}`);
             if (!countElement) return;
+            
             let currentCount = parseInt(countElement.innerText) + change;
             if (currentCount < 0) currentCount = 0; 
+            
             countElement.innerText = currentCount;
             localStorage.setItem(key, currentCount);
+            
+            // 여기서 카운트를 다시 계산하고 화면에 반영합니다.
             updateTotalOwnedCount();
+            
             if (currentTab === 'my') renderGrid();
+        }
+
+        function updateTotalOwnedCount() {
+            let total = 0;
+            // 모든 포켓몬 리스트를 순회하며 1개 이상 가지고 있는지 확인
+            pokemonList.forEach(p => {
+                const count = parseInt(localStorage.getItem(`poke30th-${p.id}`)) || 0;
+                if (count > 0) total++;
+            });
+            // 내 리스트 버튼 안의 숫자를 업데이트
+            document.getElementById('total-owned').innerText = total;
         }
      function switchTab(tabName) {
     currentTab = tabName;
