@@ -9,8 +9,9 @@
         h1 { text-align: center; color: #111; margin-bottom: 20px; }
         
         /* 세대별 상단 탭 버튼 레이아웃 */
-        .tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 1200px; margin: 0 auto 30px auto; }
-        .tab-btn { background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 8px 16px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+        /* 세대별 상단 탭 버튼 레이아웃 */
+.tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1200px; margin: 0 auto 30px auto; padding: 0 10px; }
+.tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .tab-btn:hover { background-color: #eee; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
         
@@ -69,6 +70,18 @@
     <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
+        // 복사 기능 함수 추가
+function copyUrl() {
+    const copyText = document.getElementById("share-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // 모바일 대응
+    
+    navigator.clipboard.writeText(copyText.value).then(() => {
+        alert("도감 주소가 복사되었습니다!");
+    }).catch(err => {
+        alert("복사에 실패했습니다.");
+    });
+}
         // [추가] URL 파라미터에서 유저 ID를 가져옵니다.
         const urlParams = new URLSearchParams(window.location.search);
         let currentUser = urlParams.get('user');
