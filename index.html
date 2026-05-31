@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>포켓몬 30주년 로고 스티커 체크리스트</title>
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; color: #333; }
@@ -17,7 +17,23 @@
         .tab-btn.my-list-btn:hover { background-color: #059669; }
         
         /* 가로 6칸 고정 스타일 */
-        .grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; max-width: 1200px; margin: 0 auto; }
+        /* 기존 grid-container를 유지하되 모바일 화면 고려 */
+.grid-container { 
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 5px; /* 모바일에서 좁을 수 있으니 간격 축소 */
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 10px;
+}
+
+/* 모바일 화면(폭 600px 이하)에서는 칸 크기 자동 조절 */
+@media (max-width: 600px) {
+    .pokemon-img { width: 40px; height: 40px; }
+    .pokemon-info { font-size: 10px; }
+    .grid-container { gap: 3px; }
+    .btn { width: 20px; height: 20px; font-size: 12px; }
+}
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         
         .pokemon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; background-color: #f1f5f9; border-radius: 8px; }
@@ -59,6 +75,19 @@
     <div class="grid-container" id="pokemon-grid"></div>
 
     <script>
+     
+let currentTab = '1'; 
+
+function updateTotalOwnedCount() {
+    let total = 0;
+    // 모든 포켓몬 리스트를 순회하며 1개 이상 가지고 있는지 확인
+    pokemonList.forEach(p => {
+        // changeCount에서 저장하는 키 형식(`poke30th-${id}`)과 일치시켜야 합니다.
+        const count = parseInt(localStorage.getItem(`poke30th-${p.id}`)) || 0;
+        if (count > 0) total++;
+    });
+    document.getElementById('total-owned').innerText = total;
+}
 
         // ================================================================
        const pokemonNames = {
