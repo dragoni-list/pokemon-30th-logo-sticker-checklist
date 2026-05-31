@@ -34,6 +34,19 @@
     .grid-container { gap: 3px; }
     .btn { width: 20px; height: 20px; font-size: 12px; }
 }
+        /* 내 리스트 탭 등 요소가 적을 때를 대비한 최소 높이 설정 */
+#pokemon-grid {
+    min-height: 200px; /* 혹은 적절한 최소 높이 */
+}
+
+/* 메시지가 떴을 때 grid가 쪼그라드는 것 방지 */
+.empty-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    color: #888;
+    width: 100%;
+}
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         
         .pokemon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; background-color: #f1f5f9; border-radius: 8px; }
