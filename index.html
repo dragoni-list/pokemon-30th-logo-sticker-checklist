@@ -54,6 +54,13 @@
         <button class="tab-btn" onclick="switchTab('9')">9세대</button>
         <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
     </div>
+    <button class="tab-btn" onclick="switchTab('search')">🔍 검색</button>
+    <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
+</div>
+
+<div id="search-box" style="display: none; justify-content: center; margin-bottom: 20px;">
+    <input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center;">
+</div>
 
     <div class="grid-container" id="pokemon-grid"></div>
 
@@ -234,36 +241,47 @@ const pokemonList = [];
             }
         });
         function renderGrid() {
-            const gridContainer = document.getElementById('pokemon-grid');
-            gridContainer.innerHTML = ''; 
-            let visibleCount = 0;
+           const gridContainer = document.getElementById('pokemon-grid');
+    gridContainer.innerHTML = ''; 
+    const searchVal = document.getElementById('search-id').value.trim();
+    let visibleCount = 0;
 
-            pokemonList.forEach(pokemon => {
-                const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
+    // 검색창 표시 여부 제어
+    document.getElementById('search-box').style.display = (currentTab === 'search') ? 'flex' : 'none';
 
-                if (currentTab !== 'my' && pokemon.gen !== currentTab) return;
-                if (currentTab === 'my' && savedCount === 0) return;
+    pokemonList.forEach(pokemon => {
+        const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
 
-                visibleCount++;
-
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
-                    <div class="pokemon-info"><span class="number">No.${pokemon.id}</span>${pokemon.name}</div>
-                    <div class="counter-container">
-                        <button class="btn" onclick="changeCount(${pokemon.id}, -1)">-</button>
-                        <span class="count" id="count-${pokemon.id}">${savedCount}</span>
-                        <button class="btn" onclick="changeCount(${pokemon.id}, 1)">+</button>
-                    </div>
-                `;
-                gridContainer.appendChild(card);
-            });
-
-            if (visibleCount === 0 && currentTab === 'my') {
-                gridContainer.innerHTML = `<div class="empty-message">아직 체크된 스티커가 없습니다. 다른 세대 탭에서 스티커 수량을 추가해 보세요!</div>`;
-            }
+        // 1. 검색 탭 로직: 검색창에 입력된 번호와 displayId가 일치하는지 확인
+        if (currentTab === 'search') {
+            if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
+        } 
+        // 2. 기존 로직: 내 리스트 또는 세대 탭
+        else if (currentTab === 'my') {
+            if (savedCount === 0) return;
         }
+        else if (pokemon.gen !== currentTab) return;
+
+        visibleCount++;
+        // ... (이후 카드 생성 코드는 기존과 동일하게 유지)
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
+            <div class="pokemon-info"><span class="number">No.${pokemon.id}</span>${pokemon.name}</div>
+            <div class="counter-container">
+                <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
+                <span class="count" id="count-${pokemon.id}">${savedCount}</span>
+                <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
+            </div>
+        `;
+        gridContainer.appendChild(card);
+    });
+
+    if (visibleCount === 0 && (currentTab === 'my' || currentTab === 'search')) {
+        gridContainer.innerHTML = `<div class="empty-message">해당되는 포켓몬이 없습니다.</div>`;
+    }
+}
 
         function changeCount(id, change) {
             const countElement = document.getElementById(`count-${id}`);
