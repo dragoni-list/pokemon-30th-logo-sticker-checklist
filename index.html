@@ -7,81 +7,33 @@
     <style>
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; color: #333; }
         h1 { text-align: center; color: #111; margin-bottom: 20px; }
-        
         .tab-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 1200px; margin: 0 auto 30px auto; padding: 0 10px; }
-        .tab-btn { flex: 0 0 auto; background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
-        .tab-btn:hover { background-color: #eee; }
+        .tab-btn { background-color: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .tab-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        
         .tab-btn.my-list-btn { background-color: #10b981; color: white; border-color: #10b981; }
-        .tab-btn.my-list-btn:hover { background-color: #059669; }
         
-        /* 가로 6칸 고정 스타일 */
-        /* 기존 grid-container를 유지하되 모바일 화면 고려 */
-.grid-container { 
-    display: grid; 
-    grid-template-columns: repeat(6, 1fr); 
-    gap: 5px; /* 모바일에서 좁을 수 있으니 간격 축소 */
-    max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 10px;
-    min-height: 300px; /* 적절한 최소 높이 지정 */
-}
-
-/* 모바일 화면(폭 600px 이하)에서는 칸 크기 자동 조절 */
-        /* iOS 브라우저 확대 방지 핵심 코드 */
-@media screen and (max-width: 768px) {
-    input, select, textarea {
-        font-size: 16px !important; /* 16px 이상이어야 확대되지 않음 */
-        transform: none !important;
-    }
-}
-@media (max-width: 600px) {
-    .pokemon-img { width: 40px; height: 40px; }
-    .pokemon-info { font-size: 10px; }
-    .grid-container { gap: 3px; }
-    .btn { width: 20px; height: 20px; font-size: 12px; }
-}
-        /* 내 리스트 탭 등 요소가 적을 때를 대비한 최소 높이 설정 */
-#pokemon-grid {
-    min-height: 200px; /* 혹은 적절한 최소 높이 */
-}
-
-/* 메시지가 떴을 때 grid가 쪼그라드는 것 방지 */
-.empty-message {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 50px;
-    color: #888;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; max-width: 1200px; margin: 0 auto; padding: 10px; min-height: 300px; }
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        
         .pokemon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; background-color: #f1f5f9; border-radius: 8px; }
         .pokemon-info { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
         .number { color: #888; font-size: 10px; margin-right: 4px; }
-        
-        .counter-container { display: flex; align-items: center; gap: 8px; }
-        .btn { background-color: #eee; border: none; border-radius: 4px; width: 25px; height: 25px; font-size: 14px; cursor: pointer; }
-        .count { font-size: 14px; font-weight: bold; min-width: 15px; }
-        
+        .btn { background-color: #eee; border: none; border-radius: 4px; width: 25px; height: 25px; cursor: pointer; }
         .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; }
+        
         @media screen and (max-width: 768px) {
-    input, select, textarea {
-        font-size: 16px !important; /* 16px 미만이면 자동으로 확대됨 */
-        -webkit-text-size-adjust: none; /* 텍스트 자동 확대 금지 */
-        touch-action: manipulation;
-    }
+            input { font-size: 16px !important; }
+        }
+        @media (max-width: 600px) {
+            .grid-container { grid-template-columns: repeat(3, 1fr); }
+            .pokemon-img { width: 60px; height: 60px; }
+        }
     </style>
 </head>
 <body>
 
     <h1>포켓몬 30주년 로고 스티커 체크리스트</h1>
 
-    <div class="tab-container">
+    <div class="tab-container" id="tab-menu">
         <button class="tab-btn active" onclick="switchTab('1')">1세대</button>
         <button class="tab-btn" onclick="switchTab('2')">2세대</button>
         <button class="tab-btn" onclick="switchTab('3')">3세대</button>
@@ -92,13 +44,7 @@
         <button class="tab-btn" onclick="switchTab('8')">8세대</button>
         <button class="tab-btn" onclick="switchTab('9')">9세대</button>
         <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
-    </div>
-    
-    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-        <button class="tab-btn" onclick="switchTab('search')">🔍 검색(전체)</button>
-    </div>
-
-        <input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center;">
+        <button class="tab-btn" onclick="switchTab('search')">🔍 검색</button>
     </div>
 
     <div class="grid-container" id="pokemon-grid"></div>
@@ -285,124 +231,64 @@ const pokemonList = [];
                 });
             }
         });
- function renderGrid() {
-    const gridContainer = document.getElementById('pokemon-grid');
-    gridContainer.innerHTML = ''; 
-    
-    // 검색창이 있을 때만 값을 가져옴
-    const searchInput = document.getElementById('search-id');
-    const searchVal = searchInput ? searchInput.value.trim() : '';
-           const searchVal = document.getElementById('search-id').value.trim();
-           let visibleCount = 0;
+function renderGrid() {
+            const gridContainer = document.getElementById('pokemon-grid');
+            gridContainer.innerHTML = '';
+            
+            const searchInput = document.getElementById('search-id');
+            const searchVal = searchInput ? searchInput.value.trim() : '';
+            let visibleCount = 0;
 
-           document.getElementById('search-box').style.display = (currentTab === 'search') ? 'flex' : 'none';
+            pokemonList.forEach(pokemon => {
+                const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
 
-           pokemonList.forEach(pokemon => {
-               const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
+                if (currentTab === 'search') {
+                    if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
+                } else if (currentTab === 'my') {
+                    if (savedCount === 0) return;
+                } else if (pokemon.gen !== currentTab) return;
 
-               if (currentTab === 'search') {
-                   if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
-               } else if (currentTab === 'my') {
-                   if (savedCount === 0) return;
-               } else if (pokemon.gen !== currentTab) return;
-
-               visibleCount++;
-               const card = document.createElement('div');
-               card.className = 'card';
-               card.innerHTML = `
-                   <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}" loading="lazy">
-                   <div class="pokemon-info"><span class="number">No.${pokemon.displayId}</span>${pokemon.name}</div>
-                   <div class="counter-container">
-                       <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
-                       <span class="count" id="count-${pokemon.id}">${savedCount}</span>
-                       <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
-                   </div>
-               `;
-               gridContainer.appendChild(card);
-           });
-           if (visibleCount === 0) {
-        gridContainer.innerHTML = `<div class="empty-message">등록된 포켓몬이 없습니다.</div>`;
-        return; // 여기서 바로 종료하면 grid 구조 안에서 메시지가 뜹니다.
-        }}
-
-// 1. 저장할 때도, 불러올 때도 이 키를 사용하세요.
-function getStorageKey(id) {
-    return `poke30th-${id}`;
-}
-
-function changeCount(id, change) {
-    const key = getStorageKey(id);
-    const countElement = document.getElementById(`count-${id}`);
-    if (!countElement) return;
-    
-    let currentCount = parseInt(countElement.innerText) + change;
-    if (currentCount < 0) currentCount = 0; 
-    
-    countElement.innerText = currentCount;
-    localStorage.setItem(key, currentCount);
-    
-    updateTotalOwnedCount(); // 전체 카운트 갱신
-    if (currentTab === 'my') renderGrid(); // '내 리스트' 탭일 경우 실시간 갱신
-}
-
-function updateTotalOwnedCount() {
-    let total = 0;
-    pokemonList.forEach(p => {
-        // 일관된 getStorageKey 사용
-        const count = parseInt(localStorage.getItem(getStorageKey(p.id))) || 0;
-        if (count > 0) total++;
-    });
-    document.getElementById('total-owned').innerText = total;
-}
-
-// 탭 전환 시 active 클래스 처리 수정
-function switchTab(tabName) {
-    currentTab = tabName;
-    
-    // 버튼 활성화 처리
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.onclick.toString().includes(`switchTab('${tabName}')`)) {
-            btn.classList.add('active');
-        }
-    });
-
-    // 1. 기존 검색창 삭제 (있다면)
-    const existingSearchBox = document.getElementById('search-box');
-    if (existingSearchBox) {
-        existingSearchBox.remove();
-    }
-
-    // 2. 검색 탭일 때만 검색창 생성
-    if (currentTab === 'search') {
-        const searchBox = document.createElement('div');
-        searchBox.id = 'search-box';
-        searchBox.style.cssText = 'display: flex; justify-content: center; margin-bottom: 20px;';
-        searchBox.innerHTML = `
-            <input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" 
-            oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center; font-size: 16px;">
-        `;
-        // grid-container 앞에 삽입
-        const grid = document.getElementById('pokemon-grid');
-        grid.parentNode.insertBefore(searchBox, grid);
-        
-        // 생성 후 바로 포커스는 주지 않음 (자동 확대 방지)
-    }
-
-    renderGrid();
-}
-        function updateTotalOwnedCount() {
-            let total = 0;
-            // 현재 유저의 고유 저장소 키(getStorageKey 사용)를 기준으로 카운트합니다.
-            pokemonList.forEach(p => {
-                const count = parseInt(localStorage.getItem(getStorageKey(p.id))) || 0;
-                if (count > 0) total++;
+                visibleCount++;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img class="pokemon-img" src="${pokemon.img}" alt="${pokemon.name}">
+                    <div class="pokemon-info"><span class="number">No.${pokemon.displayId}</span>${pokemon.name}</div>
+                    <div class="counter-container">
+                        <button class="btn" onclick="changeCount('${pokemon.id}', -1)">-</button>
+                        <span class="count" id="count-${pokemon.id}">${savedCount}</span>
+                        <button class="btn" onclick="changeCount('${pokemon.id}', 1)">+</button>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
             });
-            document.getElementById('total-owned').innerText = total;
+
+            if (visibleCount === 0) {
+                gridContainer.innerHTML = `<div class="empty-message">해당하는 포켓몬이 없습니다.</div>`;
+            }
         }
 
-        updateTotalOwnedCount();
-        renderGrid();
+        function switchTab(tabName) {
+            currentTab = tabName;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.includes(tabName === 'search' ? '검색' : (tabName === 'my' ? '내 리스트' : tabName + '세대')));
+            });
+
+            const existingSearchBox = document.getElementById('search-box');
+            if (existingSearchBox) existingSearchBox.remove();
+
+            if (currentTab === 'search') {
+                const searchBox = document.createElement('div');
+                searchBox.id = 'search-box';
+                searchBox.style.cssText = 'display: flex; justify-content: center; margin-bottom: 20px;';
+                searchBox.innerHTML = `<input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center; font-size: 16px;">`;
+                document.body.insertBefore(searchBox, document.getElementById('pokemon-grid'));
+            }
+            renderGrid();
+        }
+
+        // 초기 실행
+        switchTab('1');
     </script>
 </body>
 </html>
