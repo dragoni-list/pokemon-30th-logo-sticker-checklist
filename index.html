@@ -16,43 +16,35 @@
         .tab-btn.my-list-btn { background-color: #10b981; color: white; border-color: #10b981; }
         .tab-btn.my-list-btn:hover { background-color: #059669; }
         
-/* CSS 수정 */
-/* 1. 모바일에서 입력창 클릭 시 화면 확대 방지 (아이폰 필수) */
-input { font-size: 16px !important; }
-
-/* 2. 그리드 컨테이너 설정 */
+        /* 가로 6칸 고정 스타일 */
+        /* 기존 grid-container를 유지하되 모바일 화면 고려 */
 .grid-container { 
     display: grid; 
-    /* 화면 폭이 좁아도 무조건 6칸을 유지하도록 설정 */
     grid-template-columns: repeat(6, 1fr); 
-    gap: 5px; 
+    gap: 5px; /* 모바일에서 좁을 수 있으니 간격 축소 */
     max-width: 1200px; 
-    width: 100%; /* 부모 너비에 꽉 차게 */
     margin: 0 auto; 
     padding: 10px;
-    box-sizing: border-box; /* 패딩이 너비를 밀어내지 않도록 */
 }
 
-/* 3. 모바일 화면 최적화 */
+/* 모바일 화면(폭 600px 이하)에서는 칸 크기 자동 조절 */
 @media (max-width: 600px) {
-    .grid-container {
-        gap: 3px;
-        padding: 5px;
-    }
-    .pokemon-img { width: 10vw; height: 10vw; } /* 폭에 따라 유동적으로 크기 조정 */
-    .pokemon-info { font-size: 9px; }
-    .card { padding: 5px; }
-    .btn { width: 20px; height: 20px; font-size: 10px; }
-    .count { font-size: 12px; }
+    .pokemon-img { width: 40px; height: 40px; }
+    .pokemon-info { font-size: 10px; }
+    .grid-container { gap: 3px; }
+    .btn { width: 20px; height: 20px; font-size: 12px; }
 }
-        /* 추가 */
-.empty-message { 
-    grid-column: 1 / -1; 
-    text-align: center; 
-    padding: 50px; 
-    color: #888; 
-    width: 100%; /* 너비 강제 */
-}
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 10px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        
+        .pokemon-img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 5px; background-color: #f1f5f9; border-radius: 8px; }
+        .pokemon-info { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        .number { color: #888; font-size: 10px; margin-right: 4px; }
+        
+        .counter-container { display: flex; align-items: center; gap: 8px; }
+        .btn { background-color: #eee; border: none; border-radius: 4px; width: 25px; height: 25px; font-size: 14px; cursor: pointer; }
+        .count { font-size: 14px; font-weight: bold; min-width: 15px; }
+        
+        .empty-message { grid-column: 1 / -1; text-align: center; padding: 50px; color: #888; }
     </style>
 </head>
 <body>
