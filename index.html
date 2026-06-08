@@ -44,7 +44,7 @@
         <button class="tab-btn" onclick="switchTab('8')">8세대</button>
         <button class="tab-btn" onclick="switchTab('9')">9세대</button>
         <button class="tab-btn my-list-btn" onclick="switchTab('my')">내 리스트 (<span id="total-owned">0</span>)</button>
-        <button class="tab-btn" onclick="switchTab('search')">🔍 검색</button>
+        <button class="tab-btn" onclick="switchTab('search')">🔍 이름 검색</button>
     </div>
 
     <div class="grid-container" id="pokemon-grid"></div>
@@ -117,7 +117,7 @@ function updateTotalOwnedCount() {
             387: "모부기", 388: "수풀부기", 389: "토대부기", 390: "불꽃숭이", 391: "파이숭이", 392: "초염몽", 393: "팽도리", 394: "팽태자", 395: "엠페르트", 396: "찌르코",
             397: "찌르버드", 398: "찌르호크", 399: "비버니", 400: "비버통", 401: "귀뚤뚜기", 402: "귀뚤톡크", 403: "꼬링크", 404: "럭시오", 405: "렌트라", 406: "꼬몽울",
             407: "로즈레이드", 408: "두개도스", 409: "램펄드", 410: "방패톱스", 411: "바리톱스", 412: "도롱충이(초목)", "412_1":"도롱충이(모래땅)", "412_2":"도롱충이(슈레)",  413: "도롱마담(초목)", "413_1":"도롱마담(모래땅)", "413_2":"도롱마당(슈레)",   414: "나메일", 415: "세꿀버리", 416: "비퀸",
-            417: "파치리스", 418: "브이젤", 419: "플로젤", 420: "체리버", 421: "체리꼬(포지폼)", "421_1":"체리꼬(네거폼)",  422: "껍질무(서쪽바다)", "422_2":"껍질무(동쪽바다)",  423: "트리토돈(서쪽바다)", "423_1":"트리토돈(동쪽바다)", 424: "겟핸보숭", 425: "흔들풍손", 426: "둥실라이드",
+            417: "파치리스", 418: "브이젤", 419: "플로젤", 420: "체리버", 421: "체리꼬(포지폼)", "421_1":"체리꼬(네거폼)",  422: "깝질무(서쪽바다)", "422_1":"깝질무(동쪽바다)",  423: "트리토돈(서쪽바다)", "423_1":"트리토돈(동쪽바다)", 424: "겟핸보숭", 425: "흔들풍손", 426: "둥실라이드",
             427: "이어롤", 428: "이어롭", 429: "무우마직", 430: "돈크로우", 431: "나옹마", 432: "몬냥이", 433: "랑딸랑", 434: "스컹뿡", 435: "스컹탱크", 436: "동미러",
             437: "동탁군", 438: "꼬지지", 439: "흉내내", 440: "핑복", 441: "페라페", 442: "화강돌", 443: "딥상어동", 444: "한바이트", 445: "한카리아스", 446: "먹고자",
             447: "리오르", 448: "루카리오", 449: "히포포타스", 450: "하마돈", 451: "스콜피", 452: "드래피온", 453: "삐딱구리", 454: "독개굴", 455: "무스틈니", 456: "형광어",
@@ -291,11 +291,12 @@ function renderGrid() {
                 const savedCount = parseInt(localStorage.getItem(`poke30th-${pokemon.id}`)) || 0;
 
                 if (currentTab === 'search') {
-                    if (searchVal !== '' && String(pokemon.displayId) !== searchVal) return;
-                } else if (currentTab === 'my') {
-                    if (savedCount === 0) return;
-                } else if (pokemon.gen !== currentTab) return;
-
+    // 검색어가 있고, 포켓몬 이름에 검색어가 포함되지 않으면 화면에서 제외
+    if (searchVal !== '' && !pokemon.name.includes(searchVal)) return;
+} else if (currentTab === 'my') {
+    if (savedCount === 0) return;
+} else if (pokemon.gen !== currentTab) return;
+                
                 visibleCount++;
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -347,8 +348,8 @@ function changeCount(id, delta) {
                 const searchBox = document.createElement('div');
                 searchBox.id = 'search-box';
                 searchBox.style.cssText = 'display: flex; justify-content: center; margin-bottom: 20px;';
-                searchBox.innerHTML = `<input type="number" id="search-id" placeholder="도감 번호 입력(예: 670)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center; font-size: 16px;">`;
-                document.body.insertBefore(searchBox, document.getElementById('pokemon-grid'));
+                searchBox.innerHTML = `<input type="text" id="search-id" placeholder="포켓몬 이름 검색(예: 피카츄)" oninput="renderGrid()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 200px; text-align: center; font-size: 16px;">`;
+    document.body.insertBefore(searchBox, document.getElementById('pokemon-grid'));
             }
             renderGrid();
         }
